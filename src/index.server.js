@@ -5,19 +5,25 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 
-// mongodb+srv://Prad:<password>@cluster0.rxy5s.mongodb.net/<dbname>?retryWrites=true&w=majority
+
 
 env.config();
 
+
+
+
 mongoose.connect(
-    'mongodb://localhost:27017/test', 
-    {
+    `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@cluster0.rxy5s.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`,
+        {
         useNewUrlParser: true, 
         useUnifiedTopology: true
-    }).then(() => {
-        console.log('MongoDB connected');
-    })
-
+       
+    }
+)
+.then(() => {
+    console.log('Connected to MongoDB');
+})
+;
 
 app.use(bodyParser.json());
 
