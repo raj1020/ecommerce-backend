@@ -16,7 +16,8 @@ mongoose.connect(
     `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@cluster0.rxy5s.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`,
         {
         useNewUrlParser: true, 
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        useCreateIndex: true
        
     }
 )
