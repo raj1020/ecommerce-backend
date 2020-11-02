@@ -1,43 +1,60 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
-router.post('signup', (req, res) => {
-    User.findOne({email: req.body.email})
-    .exec((error, user) => {
+
+router.post('/signup', (req, res) => {
+    const {
+        firstName,
+        lastName,
+        email,
+        password,
+        username
+        } = req.body;
+    User.findOne({email: email})
+    .then((user) => {
         if(user) return res.status(400).json({
             message: 'User with that email already exists'
-        });
-
-        const {
-            firstName,
-            lastName,
-            email,
-            password
-            } = req.body
-
-        const _user = new User ({
-            firstName,
-            lastName,
-            email,
-            password,
-            username: Math.random().toString()
-
-        });
-
-        _user.save((error, data) => {
-            if(error) {
-                return res.status(400).json({
-                    message: 'Something went wrong'
-                });
-            }
-
-            if (data) {
-                return res.status(201).json({
-                    user: data
-                })
-            }
         })
+
+        User.findOne({username: username})
+        .then((user) => {
+            if(user) return res.status(400).json({
+                message: 'User with that username already exists'
+            })
+        
+
+        bcrypt.hash(password, 12)
+        .then(hashedpassword => {
+            const _user = new User({
+                firstName,
+                lastName,
+                email,
+                password: hashedpassword,
+                username
+    
+            })
+            _user.save()
+        .then((result) => {
+           
+            return res.status(201).json(result)
+            
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+        })
+        
+    })
+
+        
+
+       
+
+        
+       
     })
 })
 

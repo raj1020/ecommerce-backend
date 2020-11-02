@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 
-
+const userRoutes = require('./routes/user');
 
 env.config();
 
@@ -13,8 +13,9 @@ env.config();
 
 
 mongoose.connect(
-    `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@cluster0.rxy5s.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`,
-        {
+    
+        `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@cluster0.fy8do.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`,
+    {
         useNewUrlParser: true, 
         useUnifiedTopology: true,
         useCreateIndex: true
@@ -24,14 +25,14 @@ mongoose.connect(
 .then(() => {
     console.log('Connected to MongoDB');
 })
+.catch(err => console.log(err))
 ;
 
 app.use(bodyParser.json());
+app.use('/api',userRoutes);
 
 app.get('/', (req, res, next) => {
-    res.status(200).json({
-        message: "Hello! This is the server."
-    });
+    res.status(200).json("Hello! This is the server.");
 
 })
 app.post('/', (req, res, next) => {
