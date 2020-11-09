@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require('../../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -14,13 +14,13 @@ exports.signup = (req, res) => {
     User.findOne({ email: email })
         .then((user) => {
             if (user) return res.status(400).json({
-                message: 'User with that email already exists'
+                message: 'Admin with that email already exists'
             })
 
             User.findOne({ username: username })
                 .then((user) => {
                     if (user) return res.status(400).json({
-                        message: 'User with that username already exists'
+                        message: 'Admin with that username already exists'
                     })
 
 
@@ -31,13 +31,14 @@ exports.signup = (req, res) => {
                                 lastName,
                                 email,
                                 password: hashedpassword,
-                                username
+                                username,
+                                role: 'admin'
 
                             })
                             _user.save()
                                 .then((result) => {
 
-                                    return res.status(201).json("User created successfully.")
+                                    return res.status(201).json("Admin created successfully.")
 
                                 })
                                 .catch(err => {
@@ -69,7 +70,7 @@ exports.signin = (req, res) => {
 
             bcrypt.compare(password, savedUser.password)
                 .then(doMatch => {
-                    if (doMatch) {
+                    if (doMatch && savedUser.role === 'admin') {
                         const token = jwt.sign({ _id: savedUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
                         const {_id, firstName, lastName, email, role, fullName } = savedUser;
                         res.status(200).json({

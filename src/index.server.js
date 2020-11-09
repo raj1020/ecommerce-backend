@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 
 const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin/auth');
 
 env.config();
 
@@ -30,6 +31,7 @@ mongoose.connect(
 
 app.use(bodyParser.json());
 app.use('/api',authRoutes);
+app.use('/api',adminRoutes);
 
 app.get('/', (req, res, next) => {
     res.status(200).json("Hello! This is the server.");
